@@ -62,11 +62,13 @@ private data class PlayerSnapshotSignals(
 )
 
 /**
- * True when the app already knows it has no usable connection. Unknown/Checking states are
- * treated as "not offline" so we never suppress work we are not sure about.
+ * True when the app already knows it has no internet connection. Unknown/Checking states are
+ * treated as "not offline" so we never suppress work we are not sure about. Nuvio's own servers
+ * being unreachable does not count: what this gates (addon subtitles, skip intervals, next
+ * episode streams) is fetched from addons and other services, not from those servers.
  */
 internal fun isNetworkOffline(): Boolean =
-    NetworkStatusRepository.uiState.value.isOfflineLike
+    NetworkStatusRepository.uiState.value.condition == NetworkCondition.NoInternet
 
 @Composable
 private fun rememberNetworkCondition(): NetworkCondition {
